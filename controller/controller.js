@@ -1,7 +1,7 @@
 'use strict';
 
 var response = require('../res/res');
-var connection = require('../connection/conn');
+var connection = require('../config/database/mysql');
 
 exports.users = function(req, res) {
     connection.query('SELECT * FROM users', function (error, rows, fields){
@@ -18,26 +18,37 @@ exports.index = function(req, res) {
 };
 
 exports.findUsers = function(req, res) {
-    var user_id = req.params.user_id;
-    connection.query('SELECT * FROM users where id = ?',
-    [ user_id ], 
+    var user_id = req.params.id;
+    connection.query('SELECT * FROM users where id = ?',[ user_id ], 
     function (error, rows, fields){
         if(error){
             console.log(error)
-        } else{
-            response.ok(rows, res)
+        }else{
+            if(rows.length <= 0){
+                res.send({
+                    status: 400,
+                    message: "Data Not Found !",
+                    data: null
+                });
+            }else{
+                response.ok(rows, res)
+            }
+            
         }
     });
 };
 
 exports.createUsers = function(req, res) {
+    
     var full_name = req.body.full_name;
     var gender = req.body.gender;
     var jenjang = req.body.jenjang;
     var phone = req.body.phone;
+    var nik = req.body.nik;
+    var username = req.body.username;
 
-    connection.query('INSERT INTO users (full_name, gender, jenjang, phone) values (?, ?, ?, ?)',
-    [ full_name, gender, jenjang, phone ], 
+    connection.query('INSERT INTO users (full_name, gender, jenjang, phone, nik, username) values (?, ?, ?, ?, ?, ?)',
+    [ full_name, gender, jenjang, phone, nik ], 
     function (error, rows, fields){
         if(error){
             console.log(error)
@@ -67,14 +78,14 @@ exports.updateUsers = function(req, res) {
 };
 
 exports.deleteUsers = function(req, res) {
-    var id = req.body.id;
+    var id = req.params.id;
 
     connection.query('DELETE FROM users WHERE id = ?',
     [id], 
     function (error, rows, fields){
         if(error){
             console.log(error)
-        } else{
+        }else{
             response.ok("Berhasil menghapus user!", res)
         }
     });

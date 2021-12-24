@@ -1,23 +1,36 @@
-'use strict';
+const express = require('express');
+const router = express.Router();
+const controller = require('../controller/index');
 
-module.exports = function(app) {
-    var todoList = require('./../controller/controller');
 
-    app.route('/')
-        .get(todoList.index);
+router.get('/user', controller.user.getAll);
+router.get('/user/:id', controller.user.getById);
+router.post('/postUser', controller.user.postUser);
+router.delete('/deleteUser/:id', controller.user.deleteUser);
+router.put('/updateUser/:id', controller.user.updateUser);
 
-    app.route('/users')
-        .get(todoList.users);
 
-    app.route('/get_users/:id')
-        .get(todoList.findUsers);
+// 'use strict';
 
-    app.route('/post_users')
-        .post(todoList.createUsers);
+// module.exports = function(app) {
+//     var todoList = require('./../controller/controller');
 
-    app.route('/update_users/:id')
-        .put(todoList.updateUsers);
+//     app.route('/')
+//         .get(todoList.index);
+
+//     app.route('/users')
+//         .get(todoList.users);
+
+//     app.route('/users/:id')
+//         .get(todoList.findUsers);
+
+//     app.route('/post_users')
+//         .post(todoList.createUsers);
+
+//     app.route('/update_users/:id')
+//         .put(todoList.updateUsers);
     
-    app.route('/delete_users/:id')
-        .delete(todoList.deleteUsers);
-};
+//     app.route('/delete_users/:id')
+//         .delete(todoList.deleteUsers);
+// };
+module.exports = router;
